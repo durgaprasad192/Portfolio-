@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Portfolio</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MATRIX BACKGROUND -->
+  <canvas id="matrixBackground"></canvas>
+
+  <!-- LOGIN PAGE -->
+  <div id="loginOverlay">
+    <div class="login-box">
+      <h1>Login Required</h1>
+      <div class="login-row">
+        <input type="email" id="emailInput" placeholder="Enter your Gmail">
+        <button id="loginBtn">Login</button>
+      </div>
+      <p id="loginError"></p>
+    </div>
+  </div>
+
+  <!-- WELCOME PAGE -->
+  <div id="welcomeOverlay">
+    <div class="welcome-content">
+      <h1>Welcome to My Portfolio</h1>
+      <button id="enterBtn">Let's Go 🚀</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="mainContent">
+
+    <header>
+      <h1>Hello, I'm Durga Prasad</h1>
+      <p>Welcome to my portfolio website!</p>
+    </header>
+
+    <nav>
+      <button class="tabBtn" data-target="about">About</button>
+      <button class="tabBtn" data-target="projects">Projects</button>
+      <button class="tabBtn" data-target="contact">Contact</button>
+    </nav>
+
+    <section id="about" class="tabContent">
+      <h2>About Me</h2>
+      <img src="image.png" alt="Profile">
+      <p>👋 Hi, I’m Durga Prasad, a student passionate about coding.</p>
+      <p>💻 I enjoy solving problems and building creative projects.</p>
+      <p>🚀 Interested in Web, App & AI development.</p>
+    </section>
+
+    <section id="projects" class="tabContent" style="display:none;">
+      <h2>Projects</h2>
+      <ul>
+        <li>Dodge Rush</li>
+        <li>Flappy Bird</li>
+        <li>Portfolio Website</li>
+      </ul>
+    </section>
+
+    <section id="contact" class="tabContent" style="display:none;">
+      <h2>Contact</h2>
+      <p>Email: durgaprasadravi6@gmail.com</p>
+      <p>GitHub: https://github.com/durgaprasad192</p>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
