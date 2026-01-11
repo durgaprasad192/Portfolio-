@@ -1,3 +1,4 @@
+<script type="module" src="firebase.js"></script>
 const canvas = document.getElementById("matrixBackground");
 const ctx = canvas.getContext("2d");
 
@@ -56,3 +57,4 @@ document.querySelectorAll(".tabBtn").forEach(btn => {
     document.getElementById(btn.dataset.target).style.display = "block";
   };
 });
+
