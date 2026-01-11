@@ -1,4 +1,9 @@
-<script type="module" src="firebase.js"></script>
+import { signInWithEmailAndPassword, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { auth } from "./firebase.js";
+
+/* ================= MATRIX BACKGROUND ================= */
+
 const canvas = document.getElementById("matrixBackground");
 const ctx = canvas.getContext("2d");
 
@@ -34,27 +39,60 @@ setInterval(draw, 40);
 
 window.onresize = () => { resize(); init(); };
 
-// LOGIN
+/* ================= LOGIN (FIREBASE) ================= */
+
+const loginBtn = document.getElementById("loginBtn");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+const loginError = document.getElementById("loginError");
+
+const loginOverlay = document.getElementById("loginOverlay");
+const welcomeOverlay = document.getElementById("welcomeOverlay");
+const mainContent = document.getElementById("mainContent");
+
 loginBtn.onclick = () => {
-  if (!/^[\w.+-]+@gmail\.com$/.test(emailInput.value)) {
-    loginError.textContent = "Enter a valid Gmail address";
+  const email = emailInput.value;
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    loginError.textContent = "Please enter email and password";
     return;
   }
-  loginOverlay.style.display = "none";
-  welcomeOverlay.style.display = "flex";
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      loginOverlay.style.display = "none";
+      welcomeOverlay.style.display = "flex";
+      loginError.textContent = "";
+    })
+    .catch(err => {
+      loginError.textContent = err.message;
+    });
 };
 
-// ENTER
+/* ================= AUTO LOGIN CHECK ================= */
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    loginOverlay.style.display = "none";
+    welcomeOverlay.style.display = "flex";
+    console.log("Logged in user:", user.email);
+  }
+});
+
+/* ================= ENTER BUTTON ================= */
+
 enterBtn.onclick = () => {
   welcomeOverlay.style.display = "none";
   mainContent.style.display = "block";
 };
 
-// TABS
+/* ================= TABS ================= */
+
 document.querySelectorAll(".tabBtn").forEach(btn => {
   btn.onclick = () => {
-    document.querySelectorAll(".tabContent").forEach(sec => sec.style.display = "none");
+    document.querySelectorAll(".tabContent")
+      .forEach(sec => sec.style.display = "none");
     document.getElementById(btn.dataset.target).style.display = "block";
   };
 });
-
