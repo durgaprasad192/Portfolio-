@@ -18,7 +18,7 @@ body {
   z-index: -1;
 }
 
-/* ================= LOGIN PAGE ================= */
+/* LOGIN PAGE */
 #loginOverlay {
   position: fixed;
   inset: 0;
@@ -72,7 +72,7 @@ body {
   margin-top: 15px;
 }
 
-/* ================= WELCOME PAGE ================= */
+/* WELCOME PAGE */
 #welcomeOverlay {
   position: fixed;
   inset: 0;
@@ -98,13 +98,12 @@ body {
   cursor: pointer;
 }
 
-/* ================= MAIN CONTENT ================= */
+/* MAIN CONTENT */
 #mainContent {
   display: none;
   padding: 70px 10vw;
 }
 
-/* HEADER */
 header h1 {
   font-size: 3.6rem;
   text-shadow: 0 0 35px #00ff00;
@@ -115,7 +114,6 @@ header p {
   margin-top: 14px;
 }
 
-/* NAV */
 nav {
   display: flex;
   justify-content: center;
@@ -134,7 +132,6 @@ nav {
   cursor: pointer;
 }
 
-/* CONTENT SECTIONS */
 .tabContent {
   max-width: 1200px;
   padding: 60px;
@@ -156,7 +153,6 @@ nav {
   line-height: 2;
 }
 
-/* PROFILE IMAGE */
 .tabContent img {
   display: block;
   margin: 35px auto;
