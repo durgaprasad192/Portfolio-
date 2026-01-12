@@ -1,10 +1,21 @@
+// 🔥 FIREBASE IMPORTS
 import { auth } from "./firebase.js";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-// MATRIX BACKGROUND (UNCHANGED)
+// 🔗 CONNECT HTML ELEMENTS (VERY IMPORTANT)
+const loginBtn = document.getElementById("loginBtn");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+const loginOverlay = document.getElementById("loginOverlay");
+const welcomeOverlay = document.getElementById("welcomeOverlay");
+const mainContent = document.getElementById("mainContent");
+const loginError = document.getElementById("loginError");
+const enterBtn = document.getElementById("enterBtn");
+
+// 🎬 MATRIX BACKGROUND
 const canvas = document.getElementById("matrixBackground");
 const ctx = canvas.getContext("2d");
 
@@ -26,54 +37,69 @@ init();
 function draw() {
   ctx.fillStyle = "rgba(0,0,0,0.08)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   ctx.fillStyle = "#00ff00";
   ctx.font = fontSize + "px monospace";
 
   drops.forEach((y, i) => {
-    ctx.fillText(letters[Math.random() * 2 | 0], i * fontSize, y * fontSize);
-    if (y * fontSize > canvas.height && Math.random() > 0.97) drops[i] = 0;
+    ctx.fillText(
+      letters[Math.floor(Math.random() * letters.length)],
+      i * fontSize,
+      y * fontSize
+    );
+    if (y * fontSize > canvas.height && Math.random() > 0.97) {
+      drops[i] = 0;
+    }
     drops[i]++;
   });
 }
+
 setInterval(draw, 40);
-window.onresize = () => { resize(); init(); };
+window.onresize = () => {
+  resize();
+  init();
+};
 
 // 🔐 LOGIN WITH FIREBASE
 loginBtn.onclick = async () => {
-  const email = emailInput.value;
-  const password = passwordInput.value;
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  loginError.textContent = "";
 
   if (!email || !password) {
-    loginError.textContent = "Enter email and password";
+    loginError.textContent = "Please enter email and password";
     return;
   }
 
   try {
+    // Try login
     await signInWithEmailAndPassword(auth, email, password);
     loginOverlay.style.display = "none";
     welcomeOverlay.style.display = "flex";
-  } catch (err) {
-    // If user doesn't exist → auto register
+  } catch (error) {
     try {
+      // Auto-register if user not found
       await createUserWithEmailAndPassword(auth, email, password);
       loginOverlay.style.display = "none";
       welcomeOverlay.style.display = "flex";
-    } catch (e) {
-      loginError.textContent = e.message;
+    } catch (err) {
+      loginError.textContent = err.message;
     }
   }
 };
 
-// ENTER
+// 👉 ENTER BUTTON
 enterBtn.onclick = () => {
   welcomeOverlay.style.display = "none";
   mainContent.style.display = "block";
 };
 
-// TABS
+// 📌 TABS
 document.querySelectorAll(".tabBtn").forEach(btn => {
   btn.onclick = () => {
-    document.querySelectorAll(".tabContent").forEach(sec => sec.style.display = "none");
+    document.querySelectorAll(".tabContent").forEach(sec => {
+      sec.style.display = "none";
+    });
     document.getElementById(btn.dataset.target).style.display = "block";
   };
 });
