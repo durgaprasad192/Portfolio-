@@ -67,9 +67,11 @@ body {
   cursor: pointer;
 }
 
+/* 🔴 ERROR MESSAGE */
 #loginError {
   color: red;
   margin-top: 15px;
+  font-size: 1.1rem;
 }
 
 /* WELCOME PAGE */
