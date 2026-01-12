@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-// 🔗 CONNECT HTML ELEMENTS (VERY IMPORTANT)
+// 🔗 CONNECT HTML ELEMENTS
 const loginBtn = document.getElementById("loginBtn");
 const emailInput = document.getElementById("emailInput");
 const passwordInput = document.getElementById("passwordInput");
@@ -60,25 +60,33 @@ window.onresize = () => {
   init();
 };
 
-// 🔐 LOGIN WITH FIREBASE
+// 🔐 LOGIN WITH VALID EMAIL CHECK
 loginBtn.onclick = async () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
   loginError.textContent = "";
+
+  // Valid email format check
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!email || !password) {
     loginError.textContent = "Please enter email and password";
     return;
   }
 
+  if (!emailRegex.test(email)) {
+    loginError.textContent = "Please enter a valid email address";
+    return;
+  }
+
   try {
-    // Try login
+    // Login if user exists
     await signInWithEmailAndPassword(auth, email, password);
     loginOverlay.style.display = "none";
     welcomeOverlay.style.display = "flex";
   } catch (error) {
     try {
-      // Auto-register if user not found
+      // Auto-register new user
       await createUserWithEmailAndPassword(auth, email, password);
       loginOverlay.style.display = "none";
       welcomeOverlay.style.display = "flex";
