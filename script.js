@@ -60,27 +60,27 @@ window.onresize = () => {
   init();
 };
 
-// 🔐 LOGIN WITH VALID EMAIL CHECK
+// 🔐 LOGIN LOGIC (STRICT @gmail.com CHECK)
 loginBtn.onclick = async () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
   loginError.textContent = "";
 
-  // Valid email format check
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // STRICT Gmail-only regex
+  const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
   if (!email || !password) {
     loginError.textContent = "Please enter email and password";
     return;
   }
 
-  if (!emailRegex.test(email)) {
-    loginError.textContent = "Please enter a valid email address";
+  if (!gmailRegex.test(email)) {
+    loginError.textContent = "@gmail.com must be mentioned";
     return;
   }
 
   try {
-    // Login if user exists
+    // Try login
     await signInWithEmailAndPassword(auth, email, password);
     loginOverlay.style.display = "none";
     welcomeOverlay.style.display = "flex";
@@ -102,7 +102,7 @@ enterBtn.onclick = () => {
   mainContent.style.display = "block";
 };
 
-// 📌 TABS
+// 📌 TAB SWITCHING
 document.querySelectorAll(".tabBtn").forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll(".tabContent").forEach(sec => {
