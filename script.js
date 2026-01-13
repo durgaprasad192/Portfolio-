@@ -1,12 +1,15 @@
-// 🔥 FIREBASE IMPORTS
+// 🔥 FIREBASE
 import { auth } from "./firebase.js";
 import {
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-// 🔗 CONNECT HTML ELEMENTS
+// 🔗 ELEMENTS
 const loginBtn = document.getElementById("loginBtn");
+const googleLoginBtn = document.getElementById("googleLoginBtn");
 const emailInput = document.getElementById("emailInput");
 const passwordInput = document.getElementById("passwordInput");
 const loginOverlay = document.getElementById("loginOverlay");
@@ -15,78 +18,33 @@ const mainContent = document.getElementById("mainContent");
 const loginError = document.getElementById("loginError");
 const enterBtn = document.getElementById("enterBtn");
 
-// 🎬 MATRIX BACKGROUND
-const canvas = document.getElementById("matrixBackground");
-const ctx = canvas.getContext("2d");
-
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-
-const letters = "01";
-const fontSize = 18;
-let drops = [];
-
-function init() {
-  drops = Array(Math.floor(canvas.width / fontSize)).fill(1);
-}
-init();
-
-function draw() {
-  ctx.fillStyle = "rgba(0,0,0,0.08)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "#00ff00";
-  ctx.font = fontSize + "px monospace";
-
-  drops.forEach((y, i) => {
-    ctx.fillText(
-      letters[Math.floor(Math.random() * letters.length)],
-      i * fontSize,
-      y * fontSize
-    );
-    if (y * fontSize > canvas.height && Math.random() > 0.97) {
-      drops[i] = 0;
-    }
-    drops[i]++;
-  });
+// 📧 GMAIL VALIDATION
+function isValidGmail(email) {
+  return /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email);
 }
 
-setInterval(draw, 40);
-window.onresize = () => {
-  resize();
-  init();
-};
-
-// 🔐 LOGIN LOGIC (STRICT @gmail.com CHECK)
+// 🔐 EMAIL / PASSWORD LOGIN
 loginBtn.onclick = async () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
   loginError.textContent = "";
 
-  // STRICT Gmail-only regex
-  const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-
   if (!email || !password) {
-    loginError.textContent = "Please enter email and password";
+    loginError.textContent = "Email and password required";
     return;
   }
 
-  if (!gmailRegex.test(email)) {
-    loginError.textContent = "@gmail.com must be mentioned";
+  if (!isValidGmail(email)) {
+    loginError.textContent = "Email must end with @gmail.com";
     return;
   }
 
   try {
-    // Try login
     await signInWithEmailAndPassword(auth, email, password);
     loginOverlay.style.display = "none";
     welcomeOverlay.style.display = "flex";
-  } catch (error) {
+  } catch {
     try {
-      // Auto-register new user
       await createUserWithEmailAndPassword(auth, email, password);
       loginOverlay.style.display = "none";
       welcomeOverlay.style.display = "flex";
@@ -96,18 +54,29 @@ loginBtn.onclick = async () => {
   }
 };
 
-// 👉 ENTER BUTTON
+// 🔑 GOOGLE LOGIN
+const provider = new GoogleAuthProvider();
+
+googleLoginBtn.onclick = async () => {
+  try {
+    await signInWithPopup(auth, provider);
+    loginOverlay.style.display = "none";
+    welcomeOverlay.style.display = "flex";
+  } catch (err) {
+    loginError.textContent = err.message;
+  }
+};
+
+// 👉 ENTER
 enterBtn.onclick = () => {
   welcomeOverlay.style.display = "none";
   mainContent.style.display = "block";
 };
 
-// 📌 TAB SWITCHING
+// 📌 TABS
 document.querySelectorAll(".tabBtn").forEach(btn => {
   btn.onclick = () => {
-    document.querySelectorAll(".tabContent").forEach(sec => {
-      sec.style.display = "none";
-    });
+    document.querySelectorAll(".tabContent").forEach(sec => sec.style.display = "none");
     document.getElementById(btn.dataset.target).style.display = "block";
   };
 });
