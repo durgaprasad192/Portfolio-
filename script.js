@@ -1,82 +1,60 @@
-// 🔥 FIREBASE
-import { auth } from "./firebase.js";
+import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
 import {
+  getAuth,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
+  signInWithPopup,
   GoogleAuthProvider,
-  signInWithPopup
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// 🔗 ELEMENTS
-const loginBtn = document.getElementById("loginBtn");
-const googleLoginBtn = document.getElementById("googleLoginBtn");
-const emailInput = document.getElementById("emailInput");
-const passwordInput = document.getElementById("passwordInput");
-const loginOverlay = document.getElementById("loginOverlay");
-const welcomeOverlay = document.getElementById("welcomeOverlay");
-const mainContent = document.getElementById("mainContent");
-const loginError = document.getElementById("loginError");
-const enterBtn = document.getElementById("enterBtn");
-
-// 📧 GMAIL VALIDATION
-function isValidGmail(email) {
-  return /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email);
-}
-
-// 🔐 EMAIL / PASSWORD LOGIN
-loginBtn.onclick = async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
-  loginError.textContent = "";
-
-  if (!email || !password) {
-    loginError.textContent = "Email and password required";
-    return;
-  }
-
-  if (!isValidGmail(email)) {
-    loginError.textContent = "Email must end with @gmail.com";
-    return;
-  }
-
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    loginOverlay.style.display = "none";
-    welcomeOverlay.style.display = "flex";
-  } catch {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      loginOverlay.style.display = "none";
-      welcomeOverlay.style.display = "flex";
-    } catch (err) {
-      loginError.textContent = err.message;
-    }
-  }
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "portfolio-4dbe9.firebaseapp.com",
+  projectId: "portfolio-4dbe9",
+  appId: "YOUR_APP_ID"
 };
 
-// 🔑 GOOGLE LOGIN
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-googleLoginBtn.onclick = async () => {
-  try {
-    await signInWithPopup(auth, provider);
-    loginOverlay.style.display = "none";
-    welcomeOverlay.style.display = "flex";
-  } catch (err) {
-    loginError.textContent = err.message;
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const loginBtn = document.getElementById("loginBtn");
+const googleBtn = document.getElementById("googleLoginBtn");
+const errorBox = document.getElementById("loginError");
+
+/* EMAIL LOGIN */
+loginBtn.onclick = () => {
+  errorBox.textContent = "";
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!email.endsWith("@gmail.com")) {
+    errorBox.textContent = "@gmail.com must be mentioned";
+    return;
   }
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => window.location.href = "dashboard.html")
+    .catch(err => errorBox.textContent = err.message);
 };
 
-// 👉 ENTER
-enterBtn.onclick = () => {
-  welcomeOverlay.style.display = "none";
-  mainContent.style.display = "block";
+/* GOOGLE LOGIN */
+googleBtn.onclick = () => {
+  signInWithPopup(auth, provider)
+    .then(() => window.location.href = "dashboard.html")
+    .catch(err => {
+      if (err.code !== "auth/popup-closed-by-user") {
+        errorBox.textContent = err.message;
+      }
+    });
 };
 
-// 📌 TABS
-document.querySelectorAll(".tabBtn").forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll(".tabContent").forEach(sec => sec.style.display = "none");
-    document.getElementById(btn.dataset.target).style.display = "block";
-  };
+/* AUTO REDIRECT */
+onAuthStateChanged(auth, user => {
+  if (user) window.location.href = "dashboard.html";
 });
