@@ -1,74 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Portfolio</title>
-
+  <meta charset="UTF-8">
+  <title>Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- MATRIX BACKGROUND -->
-  <canvas id="matrixBackground"></canvas>
+<div id="loginOverlay">
+  <div class="login-box">
+    <h1>Login Required</h1>
 
-  <!-- LOGIN PAGE -->
-  <div id="loginOverlay">
-    <div class="login-box">
-      <h1>Login Required</h1>
-
-      <div class="login-row">
-        <input type="email" id="emailInput" placeholder="username@gmail.com">
-        <input type="password" id="passwordInput" placeholder="Password">
-        <button id="loginBtn">Login</button>
-      </div>
-
-      <!-- GOOGLE LOGIN -->
-      <button id="googleLoginBtn" class="google-btn">
-        Sign in with Google
-      </button>
-
-      <p id="loginError"></p>
+    <div class="login-row">
+      <input id="email" type="email" placeholder="username@gmail.com">
+      <input id="password" type="password" placeholder="Password">
+      <button id="loginBtn">Login</button>
     </div>
+
+    <p id="loginError"></p>
   </div>
+</div>
 
-  <!-- WELCOME PAGE -->
-  <div id="welcomeOverlay">
-    <div class="welcome-content">
-      <h1>Welcome to My Portfolio</h1>
-      <button id="enterBtn">Let's Go 🚀</button>
-    </div>
-  </div>
+<!-- GOOGLE LOGIN -->
+<button id="googleLoginBtn" class="google-btn">
+  Sign in with Google
+</button>
 
-  <!-- MAIN CONTENT -->
-  <div id="mainContent">
-    <header>
-      <h1>Hello, I'm Durga Prasad</h1>
-      <p>Welcome to my portfolio website!</p>
-    </header>
-
-    <nav>
-      <button class="tabBtn" data-target="about">About</button>
-      <button class="tabBtn" data-target="projects">Projects</button>
-      <button class="tabBtn" data-target="contact">Contact</button>
-    </nav>
-
-    <section id="about" class="tabContent">
-      <h2>About Me</h2>
-      <p>👋 Hi, I’m Durga Prasad</p>
-    </section>
-
-    <section id="projects" class="tabContent" style="display:none;">
-      <h2>Projects</h2>
-    </section>
-
-    <section id="contact" class="tabContent" style="display:none;">
-      <h2>Contact</h2>
-    </section>
-  </div>
-
-  <!-- IMPORTANT: ONLY ONE SCRIPT -->
-  <script type="module" src="script.js"></script>
+<script type="module" src="auth.js"></script>
 </body>
 </html>
