@@ -1,43 +1,113 @@
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+// 🔥 FIREBASE IMPORTS
+import { auth } from "./firebase.js";
 import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  appId: "YOUR_APP_ID"
+// 🔗 CONNECT HTML ELEMENTS
+const loginBtn = document.getElementById("loginBtn");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+const loginOverlay = document.getElementById("loginOverlay");
+const welcomeOverlay = document.getElementById("welcomeOverlay");
+const mainContent = document.getElementById("mainContent");
+const loginError = document.getElementById("loginError");
+const enterBtn = document.getElementById("enterBtn");
+
+// 🎬 MATRIX BACKGROUND
+const canvas = document.getElementById("matrixBackground");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+
+const letters = "01";
+const fontSize = 18;
+let drops = [];
+
+function init() {
+  drops = Array(Math.floor(canvas.width / fontSize)).fill(1);
+}
+init();
+
+function draw() {
+  ctx.fillStyle = "rgba(0,0,0,0.08)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#00ff00";
+  ctx.font = fontSize + "px monospace";
+
+  drops.forEach((y, i) => {
+    ctx.fillText(
+      letters[Math.floor(Math.random() * letters.length)],
+      i * fontSize,
+      y * fontSize
+    );
+    if (y * fontSize > canvas.height && Math.random() > 0.97) {
+      drops[i] = 0;
+    }
+    drops[i]++;
+  });
+}
+
+setInterval(draw, 40);
+window.onresize = () => {
+  resize();
+  init();
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+// 🔐 LOGIN LOGIC (STRICT @gmail.com CHECK)
+loginBtn.onclick = async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  loginError.textContent = "";
 
-const errorBox = document.getElementById("loginError");
+  // STRICT Gmail-only regex
+  const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
-document.getElementById("googleLoginBtn").addEventListener("click", () => {
-  errorBox.textContent = ""; // 🔥 CLEAR ERROR FIRST
+  if (!email || !password) {
+    loginError.textContent = "Please enter email and password";
+    return;
+  }
 
-  signInWithPopup(auth, provider)
-    .then((result) => {
-      // ✅ LOGIN SUCCESS
-      errorBox.textContent = ""; // 🔥 CLEAR ERROR
-      document.getElementById("loginOverlay").style.display = "none";
-      document.getElementById("mainContent").style.display = "block";
-    })
-    .catch((error) => {
-      // ❌ IGNORE popup closed error
-      if (error.code === "auth/popup-closed-by-user") {
-        errorBox.textContent = "";
-        return;
-      }
+  if (!gmailRegex.test(email)) {
+    loginError.textContent = "@gmail.com must be mentioned";
+    return;
+  }
 
-      // ❌ REAL ERRORS ONLY
-      errorBox.textContent = error.message;
+  try {
+    // Try login
+    await signInWithEmailAndPassword(auth, email, password);
+    loginOverlay.style.display = "none";
+    welcomeOverlay.style.display = "flex";
+  } catch (error) {
+    try {
+      // Auto-register new user
+      await createUserWithEmailAndPassword(auth, email, password);
+      loginOverlay.style.display = "none";
+      welcomeOverlay.style.display = "flex";
+    } catch (err) {
+      loginError.textContent = err.message;
+    }
+  }
+};
+
+// 👉 ENTER BUTTON
+enterBtn.onclick = () => {
+  welcomeOverlay.style.display = "none";
+  mainContent.style.display = "block";
+};
+
+// 📌 TAB SWITCHING
+document.querySelectorAll(".tabBtn").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".tabContent").forEach(sec => {
+      sec.style.display = "none";
     });
+    document.getElementById(btn.dataset.target).style.display = "block";
+  };
 });
-</script>
