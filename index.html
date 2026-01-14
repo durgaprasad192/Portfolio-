@@ -13,6 +13,9 @@
   <!-- MATRIX BACKGROUND -->
   <canvas id="matrixBackground"></canvas>
 
+  <!-- Google Sign-in (fixed top-right) -->
+  <button id="googleSignInBtn" class="google-btn" title="Sign in with Google">Sign in with Google</button>
+
   <!-- LOGIN PAGE -->
   <div id="loginOverlay">
     <div class="login-box">
@@ -59,16 +62,33 @@
     <section id="projects" class="tabContent" style="display:none;">
       <h2>Projects</h2>
       <ul>
-        <li>Dodge Rush</li>
-        <li>Flappy Bird</li>
-        <li>Portfolio Website</li>
+        <li data-link="link-dodge-rush">Dodge Rush</li>
+        <li data-link="link-flappy-bird">Flappy Bird</li>
+        <li data-link="link-portfolio-website">Portfolio Website</li>
       </ul>
+
+      <!-- Hidden project links: fill the hrefs with actual URLs -->
+      <div class="hidden-links" aria-hidden="true">
+        <a id="link-dodge-rush" class="hidden-link" href="https://github.com/durgaprasad192/dodge-rush" target="_blank" rel="noopener noreferrer"></a>
+        <a id="link-flappy-bird" class="hidden-link" href="https://github.com/durgaprasad192/flappy-bird" target="_blank" rel="noopener noreferrer"></a>
+        <a id="link-portfolio-website" class="hidden-link" href="https://github.com/durgaprasad192/portfolio-website" target="_blank" rel="noopener noreferrer"></a>
+      </div>
     </section>
 
     <section id="contact" class="tabContent" style="display:none;">
       <h2>Contact</h2>
-      <p>Email: durgaprasadravi6@gmail.com</p>
-      <p>GitHub: https://github.com/durgaprasad192</p>
+      <ul>
+        <li data-link="link-email">Email: durgaprasadravi6@gmail.com</li>
+        <li data-link="link-github">GitHub: https://github.com/durgaprasad192</li>
+        <li data-link="link-instagram">Instagram: @durgaprasad192</li>
+      </ul>
+
+      <!-- Hidden contact links -->
+      <div class="hidden-links" aria-hidden="true">
+        <a id="link-email" class="hidden-link" href="mailto:durgaprasadravi6@gmail.com"></a>
+        <a id="link-github" class="hidden-link" href="https://github.com/durgaprasad192" target="_blank" rel="noopener noreferrer"></a>
+        <a id="link-instagram" class="hidden-link" href="https://www.instagram.com/durga_prasad_ravi/" target="_blank" rel="noopener noreferrer"></a>
+      </div>
     </section>
 
   </div>
