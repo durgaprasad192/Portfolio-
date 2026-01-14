@@ -3,6 +3,7 @@ import { auth } from "./firebase.js";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword
+  , GoogleAuthProvider, signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
 // 🔗 CONNECT HTML ELEMENTS
@@ -14,6 +15,10 @@ const welcomeOverlay = document.getElementById("welcomeOverlay");
 const mainContent = document.getElementById("mainContent");
 const loginError = document.getElementById("loginError");
 const enterBtn = document.getElementById("enterBtn");
+
+// Google sign-in elements
+const googleSignInBtn = document.getElementById('googleSignInBtn');
+
 
 // 🎬 MATRIX BACKGROUND
 const canvas = document.getElementById("matrixBackground");
@@ -102,6 +107,23 @@ enterBtn.onclick = () => {
   mainContent.style.display = "block";
 };
 
+// Google Sign-In handler using popup
+const provider = new GoogleAuthProvider();
+if (googleSignInBtn) {
+  googleSignInBtn.addEventListener('click', async () => {
+    loginError.textContent = '';
+    try {
+      await signInWithPopup(auth, provider);
+      // successful sign-in
+      loginOverlay.style.display = 'none';
+      welcomeOverlay.style.display = 'flex';
+    } catch (err) {
+      console.error('Google sign-in error:', err);
+      loginError.textContent = err.message || 'Google sign-in failed';
+    }
+  });
+}
+
 // 📌 TAB SWITCHING
 document.querySelectorAll(".tabBtn").forEach(btn => {
   btn.onclick = () => {
@@ -110,4 +132,37 @@ document.querySelectorAll(".tabBtn").forEach(btn => {
     });
     document.getElementById(btn.dataset.target).style.display = "block";
   };
+});
+
+// Open project links (hidden anchors) when a project list item is clicked
+document.querySelectorAll('#projects li[data-link]').forEach(li => {
+  li.style.cursor = 'pointer';
+  li.addEventListener('click', () => {
+    const anchorId = li.dataset.link;
+    const a = document.getElementById(anchorId);
+    if (a && a.href) {
+      window.open(a.href, '_blank', 'noopener');
+    } else {
+      console.warn('Project link not set for', anchorId);
+    }
+  });
+});
+
+// Open contact links (hidden anchors) when a contact list item is clicked
+document.querySelectorAll('#contact li[data-link]').forEach(li => {
+  li.style.cursor = 'pointer';
+  li.addEventListener('click', () => {
+    const anchorId = li.dataset.link;
+    const a = document.getElementById(anchorId);
+    if (a && a.href) {
+      // If it's a mailto: link, open in same window; otherwise new tab
+      if (a.href.startsWith('mailto:')) {
+        window.location.href = a.href;
+      } else {
+        window.open(a.href, '_blank', 'noopener');
+      }
+    } else {
+      console.warn('Contact link not set for', anchorId);
+    }
+  });
 });
